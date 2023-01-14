@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Users.Api;
 using Users.Application;
-using Users.Application.Users.Commands;
+using Users.Application.Users.Commands.AddUserCommand;
 using Users.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);

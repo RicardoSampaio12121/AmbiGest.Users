@@ -21,10 +21,11 @@ public class DataAccess: IDataAccess
         return db.GetCollection<T>(collection);
     }
 
-    public Task AddUser(User user)
+    public async Task<User> AddUser(User user)
     {
         var userCollection = ConnectToMongo<User>(UserCollection);
-        return userCollection.InsertOneAsync(user);
+        await userCollection.InsertOneAsync(user);
+        return user;
     }
 
     public Task UpdateUser(User user)

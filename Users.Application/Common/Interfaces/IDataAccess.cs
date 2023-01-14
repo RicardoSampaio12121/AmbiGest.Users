@@ -8,7 +8,7 @@ using Users.Domain.Entities;
 namespace Users.Application.Common.Interfaces;
 public interface IDataAccess
 {
-    Task AddUser(User user);
+    Task<User> AddUser(User user);
     Task UpdateUser(User user);
     Task UpdateEmail(string currentEmail, string newEmail);
     Task DeleteUser(string email);

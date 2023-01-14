@@ -10,8 +10,8 @@ using Users.Domain.Entities;
 using Users.Domain.Enums;
 using Users.Domain.Events.AddCredentials;
 
-namespace Users.Application.Users.Commands;
-public record AddUserCommand: IRequest<int>
+namespace Users.Application.Users.Commands.AddUserCommand;
+public record AddUserCommand : IRequest<User>
 {
     public string Name { get; set; }
     public string Surname { get; set; }
@@ -19,7 +19,7 @@ public record AddUserCommand: IRequest<int>
     public DateTime BirthDate { get; set; }
 }
 
-public class AddUserCommandHandler: IRequestHandler<AddUserCommand, int>
+public class AddUserCommandHandler : IRequestHandler<AddUserCommand, User>
 {
     private readonly IDataAccess _dataAccess;
     private readonly IMapper _mapper;
@@ -30,16 +30,20 @@ public class AddUserCommandHandler: IRequestHandler<AddUserCommand, int>
         _mapper = mapper;
     }
 
-    public async Task<int> Handle(AddUserCommand request, CancellationToken cancellationToken)
+    public async Task<User> Handle(AddUserCommand request, CancellationToken cancellationToken)
     {
         //Todo: check if data is legit
         var entity = _mapper.Map<User>(request);
-
-        entity.AddDomainEvent(new AddCredentialsCreatedEvent(entity));
-        var result = _dataAccess.AddUser(entity);
-
-        //TODO: Find a way to return a string so that I can return the ID
-        return 1;
+        try
+        {
+            var result = await _dataAccess.AddUser(entity);
+            return result;
+        }
+        catch ()
+        {
+            //TODO: Use the log service here
+            throw;
+        }
     }
 }
 

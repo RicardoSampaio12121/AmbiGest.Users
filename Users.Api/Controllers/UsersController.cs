@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Users.Application.Users.Commands;
 using Users.Application.Users.Queries;
+using Users.Domain.Entities;
 
 namespace Users.Api.Controllers;
 
@@ -17,10 +18,11 @@ public class UsersController : Controller
         _mediator = mediator;
     }
 
-    [HttpPost]
-    public async Task<ActionResult<int>> CreateUser(AddUserCommand command)
+    [HttpPost("createUser")]
+    public async Task<ActionResult<User>> CreateUser(AddUserCommand command)
     {
-        return await _mediator.Send(command);
+        var output = await _mediator.Send(command);
+        return Ok(output);
     }
 
     //TODO: It needs to accept a JWT token in order to work
@@ -28,7 +30,8 @@ public class UsersController : Controller
     [HttpPut]
     public async Task<ActionResult<int>> UpdateUser(UpdateUserCommand command)
     {
-        return await _mediator.Send(command);
+        await _mediator.Send(command);
+        return NoContent();
     }
 
     //TODO: It needs to accept a JWT token in order to work
@@ -36,13 +39,15 @@ public class UsersController : Controller
     [HttpPut("updateEmail")]
     public async Task<ActionResult<int>> UpdateEmail(UpdateEmailCommand command)
     {
-        return await _mediator.Send(command);
+        await _mediator.Send(command);
+        return NoContent();
     }
 
     [HttpDelete("deleteUser")]
     public async Task<ActionResult<int>> DeleteUser(DeleteUserCommand command)
     {
-        return await _mediator.Send(command);
+        await _mediator.Send(command);
+        return NoContent();
     }
 
     [HttpGet("getUser")]

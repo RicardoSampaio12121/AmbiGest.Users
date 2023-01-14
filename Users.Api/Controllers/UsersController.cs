@@ -22,6 +22,8 @@ public class UsersController : Controller
         return await _mediator.Send(command);
     }
 
+    //TODO: It needs to accept a JWT token in order to work
+    //TODO: It needs to actually validate the jwt token
     [HttpPut]
     public async Task<ActionResult<int>> UpdateUser(UpdateUserCommand command)
     {

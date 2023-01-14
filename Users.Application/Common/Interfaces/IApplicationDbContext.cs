@@ -11,7 +11,7 @@ namespace Users.Application.Common.Interfaces;
 
 public interface IApplicationDbContext
 {
-    DbSet<Domain.Entities.Credentials> Credentials { get; }
+    DbSet<User> Users { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken);
 }

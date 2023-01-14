@@ -1,0 +1,17 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using AutoMapper;
+using Users.Application.Credentials.Commands;
+using Users.Domain.Entities;
+
+namespace Users.Application.MapperProfiles;
+public class ApplicationToDomain: Profile
+{
+    public ApplicationToDomain()
+    {
+        CreateMap<AddUserCommand, User>();
+    }
+}

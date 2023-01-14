@@ -17,7 +17,7 @@ public class UsersController : Controller
     }
 
     [HttpPost]
-    public async Task<ActionResult<int>> AddCredentials(AddCredentialsCommand command)
+    public async Task<ActionResult<int>> AddCredentials(AddUserCommand command)
     {
         return await _mediator.Send(command);
     }

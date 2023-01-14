@@ -6,13 +6,14 @@ using System.Threading.Tasks;
 using Users.Domain.Common;
 using Users.Domain.Entities;
 
-namespace Users.Domain.Events.AddCredentials;
-public class AddCredentialsCreatedEvent: BaseEvent
+namespace Users.Domain.Events.UpdateUser;
+public class UpdateUserCreatedEvent: BaseEvent
 {
-    public AddCredentialsCreatedEvent(User user)
+    public UpdateUserCreatedEvent(User user)
     {
         User = user;
     }
-
     public User User { get; set; }
+
 }
+

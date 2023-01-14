@@ -10,7 +10,7 @@ using Users.Domain.Entities;
 using Users.Domain.Enums;
 using Users.Domain.Events.AddCredentials;
 
-namespace Users.Application.Credentials.Commands;
+namespace Users.Application.Users.Commands;
 public record AddUserCommand: IRequest<int>
 {
     public string Name { get; set; }
@@ -34,11 +34,11 @@ public class AddUserCommandHandler: IRequestHandler<AddUserCommand, int>
     {
         //Todo: check if data is legit
         var entity = _mapper.Map<User>(request);
-        entity.Role = "User";
 
         entity.AddDomainEvent(new AddCredentialsCreatedEvent(entity));
-        var result = await _dataAccess.AddUser(entity);
+        var result = _dataAccess.AddUser(entity);
 
+        //TODO: Find a way to return a string so that I can return the ID
         return 1;
     }
 }

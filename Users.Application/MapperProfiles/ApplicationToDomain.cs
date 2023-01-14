@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
-using Users.Application.Credentials.Commands;
+using Users.Application.Users.Commands;
 using Users.Domain.Entities;
 
 namespace Users.Application.MapperProfiles;
@@ -13,5 +13,6 @@ public class ApplicationToDomain: Profile
     public ApplicationToDomain()
     {
         CreateMap<AddUserCommand, User>();
+        CreateMap<UpdateUserCommand, User>();
     }
 }

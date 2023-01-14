@@ -1,6 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Users.Application.Credentials.Commands;
+using Users.Application.Users.Commands;
 
 namespace Users.Api.Controllers;
 
@@ -17,7 +17,13 @@ public class UsersController : Controller
     }
 
     [HttpPost]
-    public async Task<ActionResult<int>> AddCredentials(AddUserCommand command)
+    public async Task<ActionResult<int>> CreateUser(AddUserCommand command)
+    {
+        return await _mediator.Send(command);
+    }
+
+    [HttpPut]
+    public async Task<ActionResult<int>> UpdateUser(UpdateUserCommand command)
     {
         return await _mediator.Send(command);
     }

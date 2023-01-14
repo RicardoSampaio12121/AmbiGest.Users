@@ -3,7 +3,7 @@ using MediatR;
 using Microsoft.AspNetCore.Hosting;
 using Users.Api;
 using Users.Application;
-using Users.Application.Credentials.Commands;
+using Users.Application.Users.Commands;
 using Users.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);

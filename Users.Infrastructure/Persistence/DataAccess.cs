@@ -28,10 +28,27 @@ public class DataAccess: IDataAccess
         return results.ToList();
     }
 
-    public async Task<User> AddUser(User user)
+    public Task AddUser(User user)
     {
         var userCollection = ConnectToMongo<User>(UserCollection);
-        await userCollection.InsertOneAsync(user);
-        return user;
+        return userCollection.InsertOneAsync(user);
+    }
+
+    public Task UpdateUser(User user)
+    {
+        var userCollection = ConnectToMongo<User>(UserCollection);
+
+        var filter = Builders<User>.Filter.Eq("Email", user.Email);
+        var updater = Builders<User>.Update
+            .Set(req => req.Name, user.Name)
+            .Set(req => req.Surname, user.Surname)
+            .Set(req => req.BirthDate, user.BirthDate);
+
+        var existingUser = userCollection.FindOneAndUpdateAsync(filter, updater, options: new FindOneAndUpdateOptions<User>
+        {
+            ReturnDocument = ReturnDocument.After
+        });
+
+        return existingUser;
     }
 }

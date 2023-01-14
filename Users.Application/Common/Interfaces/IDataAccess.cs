@@ -8,5 +8,6 @@ using Users.Domain.Entities;
 namespace Users.Application.Common.Interfaces;
 public interface IDataAccess
 {
-    Task<User> AddUser(User user);
+    Task AddUser(User user);
+    Task UpdateUser(User user);
 }

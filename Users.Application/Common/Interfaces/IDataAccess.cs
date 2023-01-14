@@ -10,4 +10,8 @@ public interface IDataAccess
 {
     Task AddUser(User user);
     Task UpdateUser(User user);
+    Task UpdateEmail(string currentEmail, string newEmail);
+    Task DeleteUser(string email);
+    Task GetUser(string email);
+    Task<List<User>> GetAllUsers();
 }

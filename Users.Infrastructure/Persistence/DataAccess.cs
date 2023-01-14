@@ -21,13 +21,6 @@ public class DataAccess: IDataAccess
         return db.GetCollection<T>(collection);
     }
 
-    private async Task<List<User>> GetAllUsers()
-    {
-        var userCollection = ConnectToMongo<User>(UserCollection);
-        var results = await userCollection.FindAsync(_ => true);
-        return results.ToList();
-    }
-
     public Task AddUser(User user)
     {
         var userCollection = ConnectToMongo<User>(UserCollection);
@@ -50,5 +43,46 @@ public class DataAccess: IDataAccess
         });
 
         return existingUser;
+    }
+
+    public Task UpdateEmail(string currentEmail, string newEmail)
+    {
+        //TODO: Check if the newEmail is already in use
+        var userCollection = ConnectToMongo<User>(UserCollection);
+        
+        var filter = Builders<User>.Filter.Eq("Email", currentEmail);
+        var updater = Builders<User>.Update.Set(req => req.Email, newEmail);
+
+        var existingUser = userCollection.FindOneAndUpdateAsync(filter, updater, options: new FindOneAndUpdateOptions<User>
+        {
+            ReturnDocument = ReturnDocument.After
+        });
+
+        return existingUser;
+    }
+
+    public Task DeleteUser(string email)
+    {
+        var userCollection = ConnectToMongo<User>(UserCollection);
+        var filter = Builders<User>.Filter.Eq("Email", email);
+
+        var deleted = userCollection.FindOneAndDeleteAsync(filter);
+
+        return deleted;
+    }
+
+    public Task GetUser(string email)
+    {
+        var userCollection = ConnectToMongo<User>(UserCollection);
+        var filter = Builders<User>.Filter.Eq("Email", email);
+
+        return userCollection.FindAsync(filter);
+    }
+
+    public async Task<List<User>> GetAllUsers()
+    {
+        var userCollection = ConnectToMongo<User>(UserCollection);
+        var results = await userCollection.FindAsync(_ => true);
+        return results.ToList();
     }
 }

@@ -39,7 +39,7 @@ public class AddUserCommandHandler : IRequestHandler<AddUserCommand, User>
             var result = await _dataAccess.AddUser(entity);
             return result;
         }
-        catch ()
+        catch
         {
             //TODO: Use the log service here
             throw;

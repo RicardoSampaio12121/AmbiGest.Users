@@ -1,12 +1,16 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Users.Application.Users.Commands;
+using Users.Application.Users.Commands.AddUserCommand;
 using Users.Application.Users.Queries;
 using Users.Domain.Entities;
 
 namespace Users.Api.Controllers;
 
 [ApiController]
+[Authorize(Roles = "Manager")]
+[Authorize(Roles = "Admin")]
 [Route("/api/users")]
 public class UsersController : Controller
 {
@@ -19,6 +23,7 @@ public class UsersController : Controller
     }
 
     [HttpPost("createUser")]
+    [AllowAnonymous]
     public async Task<ActionResult<User>> CreateUser(AddUserCommand command)
     {
         var output = await _mediator.Send(command);
@@ -50,15 +55,17 @@ public class UsersController : Controller
         return NoContent();
     }
 
-    [HttpGet("getUser")]
-    public async Task<ActionResult<int>> GetUser(GetUserQuery query)
+    [HttpGet("getUser/{email}")]
+    public async Task<ActionResult<int>> GetUser(string email)
     {
+        var query = new GetUserQuery() { Email= email };
         return await _mediator.Send(query);
     }
 
     [HttpGet("getAllUsers")]
-    public async Task<ActionResult<int>> GetAllUsers(GetAllUsersQuery query)
+    public async Task<ActionResult<int>> GetAllUsers()
     {
+        var query = new GetAllUsersQuery();
         return await _mediator.Send(query);
     }
 }

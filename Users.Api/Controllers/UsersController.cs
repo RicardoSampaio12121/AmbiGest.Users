@@ -22,7 +22,7 @@ public class UsersController : Controller
         _mediator = mediator;
     }
 
-    [HttpPost("createUser")]
+    [HttpPost("CreateUser")]
     [AllowAnonymous]
     public async Task<ActionResult<User>> CreateUser(AddUserCommand command)
     {

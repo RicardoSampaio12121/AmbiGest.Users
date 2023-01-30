@@ -36,7 +36,7 @@ public class DataAccess: IDataAccess
         var updater = Builders<User>.Update
             .Set(req => req.Name, user.Name)
             .Set(req => req.Surname, user.Surname)
-            .Set(req => req.BirthDate, user.BirthDate);
+            .Set(req => req.Birthdate, user.Birthdate);
 
         var existingUser = userCollection.FindOneAndUpdateAsync(filter, updater, options: new FindOneAndUpdateOptions<User>
         {

@@ -19,5 +19,17 @@ public class AddUserCommandValidator: AbstractValidator<AddUserCommand>
             .NotEmpty()
             .MaximumLength(18)
             .MinimumLength(5);
+
+        RuleFor(v => v.Email)
+                .NotEmpty()
+                .NotNull()
+                .WithMessage("Email is invalid");
+
+
+        RuleFor(v => v.BirthDate)
+            .NotEmpty()
+            .NotNull()
+            .WithMessage("Birthdate is invalid");
+
     }
 }

@@ -10,7 +10,7 @@ using Users.Domain.Entities;
 namespace Users.Infrastructure.Persistence;
 public class DataAccess: IDataAccess
 {
-    private const string ConnectionString = "mongodb://localhost:27018";
+    private const string ConnectionString = "mongodb://usersMongoDb:Qwertyuiop9@example-mongodb-0.example-mongodb-svc.mongodb.svc.cluster.local:27017/?authMechanism=SCRAM-SHA-256&ssl=false";
     private const string DatabaseName = "Users";
     private const string UserCollection = "users";
 
@@ -28,7 +28,7 @@ public class DataAccess: IDataAccess
         return user;
     }
 
-    public Task UpdateUser(User user)
+    public Task<User> UpdateUser(User user)
     {
         var userCollection = ConnectToMongo<User>(UserCollection);
 
@@ -62,7 +62,7 @@ public class DataAccess: IDataAccess
         return existingUser;
     }
 
-    public Task DeleteUser(string email)
+    public Task<User> DeleteUser(string email)
     {
         var userCollection = ConnectToMongo<User>(UserCollection);
         var filter = Builders<User>.Filter.Eq("Email", email);
@@ -72,12 +72,13 @@ public class DataAccess: IDataAccess
         return deleted;
     }
 
-    public Task GetUser(string email)
+    public async Task<List<User>> GetUser(string email)
     {
         var userCollection = ConnectToMongo<User>(UserCollection);
         var filter = Builders<User>.Filter.Eq("Email", email);
 
-        return userCollection.FindAsync(filter);
+        var users = await userCollection.FindAsync(filter);
+        return users.ToList();
     }
 
     public async Task<List<User>> GetAllUsers()

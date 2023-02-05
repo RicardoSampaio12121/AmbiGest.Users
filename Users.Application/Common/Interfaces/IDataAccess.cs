@@ -9,9 +9,9 @@ namespace Users.Application.Common.Interfaces;
 public interface IDataAccess
 {
     Task<User> AddUser(User user);
-    Task UpdateUser(User user);
+    Task<User> UpdateUser(User user);
     Task UpdateEmail(string currentEmail, string newEmail);
-    Task DeleteUser(string email);
-    Task GetUser(string email);
+    Task<User> DeleteUser(string email);
+    Task<List<User>> GetUser(string email);
     Task<List<User>> GetAllUsers();
 }

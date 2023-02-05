@@ -9,8 +9,7 @@ using Users.Domain.Entities;
 namespace Users.Api.Controllers;
 
 [ApiController]
-[Authorize(Roles = "Manager")]
-[Authorize(Roles = "Admin")]
+[Authorize(Roles = "Manager,Admin")]
 [Route("/api/users")]
 public class UsersController : Controller
 {
@@ -30,8 +29,9 @@ public class UsersController : Controller
         return Ok(output);
     }
 
-    //TODO: It needs to accept a JWT token in order to work
-    //TODO: It needs to actually validate the jwt token
+    //[HttpPost("ChangeUserRole")]
+    //public async Task<ActionResult> ChangeUserRole()
+
     [HttpPut]
     public async Task<ActionResult<int>> UpdateUser(UpdateUserCommand command)
     {
@@ -39,31 +39,24 @@ public class UsersController : Controller
         return NoContent();
     }
 
-    //TODO: It needs to accept a JWT token in order to work
-    //TODO: It needs to actually validate the jwt token
-    [HttpPut("updateEmail")]
-    public async Task<ActionResult<int>> UpdateEmail(UpdateEmailCommand command)
-    {
-        await _mediator.Send(command);
-        return NoContent();
-    }
-
+    [Authorize]
     [HttpDelete("deleteUser")]
-    public async Task<ActionResult<int>> DeleteUser(DeleteUserCommand command)
+    public async Task<ActionResult> DeleteUser(DeleteUserCommand command)
     {
         await _mediator.Send(command);
         return NoContent();
     }
 
     [HttpGet("getUser/{email}")]
-    public async Task<ActionResult<int>> GetUser(string email)
+    public async Task<ActionResult<User>> GetUser(string email)
     {
         var query = new GetUserQuery() { Email= email };
         return await _mediator.Send(query);
     }
 
+    [Authorize(Roles = "Admin,Manager")]
     [HttpGet("getAllUsers")]
-    public async Task<ActionResult<int>> GetAllUsers()
+    public async Task<ActionResult<List<User>>> GetAllUsers()
     {
         var query = new GetAllUsersQuery();
         return await _mediator.Send(query);

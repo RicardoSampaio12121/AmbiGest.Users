@@ -7,9 +7,13 @@ using System.Threading.Tasks;
 using AutoMapper;
 using MediatR;
 using Users.Application.Common.Interfaces;
+using Users.Domain.Constants;
+using Users.Domain.Dtos;
 using Users.Domain.Entities;
 using Users.Domain.Enums;
 using Users.Domain.Events.AddCredentials;
+using Users.Domain.Exceptions;
+using Users.Domain.Interfaces;
 
 namespace Users.Application.Users.Commands.AddUserCommand;
 public record AddUserCommand : IRequest<User>
@@ -28,26 +32,50 @@ public class AddUserCommandHandler : IRequestHandler<AddUserCommand, User>
 {
     private readonly IDataAccess _dataAccess;
     private readonly IMapper _mapper;
+    private readonly IRabbitMQClient _rabbitMQClient;
 
-    public AddUserCommandHandler(IDataAccess dataAccess, IMapper mapper)
+    public AddUserCommandHandler(IDataAccess dataAccess, IMapper mapper, IRabbitMQClient rabbitMQClient)
     {
         _dataAccess = dataAccess;
         _mapper = mapper;
+        _rabbitMQClient = rabbitMQClient;
     }
 
     public async Task<User> Handle(AddUserCommand request, CancellationToken cancellationToken)
     {
-        //Todo: check if data is legit
-        var entity = _mapper.Map<User>(request);
+        var loggingDto = new GenericLoggingDto(LogEventTypes.Add_Log.ToString());
+        var expectedException = "";
         try
         {
+            var entity = _mapper.Map<User>(request);
+            
+            var existing = await _dataAccess.GetUser(request.Email);
+            if(existing == null || existing.Count == 0)
+            {
+                loggingDto.LogType = LogTypes.error.ToString();
+                loggingDto.Message = LoggingMessages.AddUserUserExists(request.Email);
+                expectedException = "WrongEmailException";
+                throw new WrongEmailException();
+            }
+
             var result = await _dataAccess.AddUser(entity);
+            loggingDto.LogType = LogTypes.information.ToString();
+            loggingDto.Message = LoggingMessages.AddUserSuccessfully(request.Email);
+
             return result;
         }
-        catch
+        catch(Exception ex) 
         {
-            //TODO: Use the log service here
+            if (expectedException != "WrongEmailException")
+            {
+                loggingDto.LogType = LogTypes.error.ToString();
+                loggingDto.Message = LoggingMessages.AddUserError(request.Email, ex.Message);
+            }
             throw;
+        }
+        finally
+        {
+            _rabbitMQClient.SendMessage(Newtonsoft.Json.JsonConvert.SerializeObject(loggingDto));
         }
     }
 }

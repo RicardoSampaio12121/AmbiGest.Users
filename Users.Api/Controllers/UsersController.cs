@@ -29,8 +29,12 @@ public class UsersController : Controller
         return Ok(output);
     }
 
-    //[HttpPost("ChangeUserRole")]
-    //public async Task<ActionResult> ChangeUserRole()
+    [Authorize(Roles ="Admin,Manager")]
+    [HttpPut("ChangeUserRole")]
+    public async Task<ActionResult> ChangeUserRole()
+    {
+        return Ok();
+    }
 
     [HttpPut]
     public async Task<ActionResult<int>> UpdateUser(UpdateUserCommand command)
